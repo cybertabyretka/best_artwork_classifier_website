@@ -5,6 +5,7 @@ import onnxruntime as ort
 import io
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
+from utils import softmax
 
 
 app = FastAPI()
@@ -56,12 +57,14 @@ async def predict(file: UploadFile = File(...)):
 
     input_data = preprocess_image(image)
 
-    results = model.run(None, {input_name: input_data})[0]
-    predicted_class = np.argmax(results)
-    confidence = float(results[0][predicted_class])
+    raw_output = model.run(None, {input_name: input_data})[0][0]
+
+    probabilities = softmax(raw_output)
+    predicted_class = np.argmax(probabilities)
+    confidence = float(probabilities[predicted_class]) * 100
 
     return {
         "class": int(predicted_class),
-        "confidence": confidence,
-        "class_probs": results.tolist()
+        "confidence": round(confidence, 2),
+        "class_probabilities": probabilities.tolist()
     }
