@@ -61,7 +61,7 @@ async def predict(file: UploadFile = File(...)):
 
     probabilities = softmax(raw_output)
     predicted_class = np.argmax(probabilities)
-    confidence = float(probabilities[predicted_class]) * 100
+    confidence = float(probabilities[predicted_class])
 
     return {
         "class": int(predicted_class),
