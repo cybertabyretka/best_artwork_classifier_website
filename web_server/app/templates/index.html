@@ -23,7 +23,7 @@
     {% if prediction %}
         <div class="result">
             <h2>Результат:</h2>
-            <p>Класс: {{ prediction.class }}</p>
+            <p>Художник: {{ prediction.class_name }}</p>
             <p>Уверенность: {{ (prediction.confidence * 100)|round(2) }}%</p>
         </div>
     {% endif %}
