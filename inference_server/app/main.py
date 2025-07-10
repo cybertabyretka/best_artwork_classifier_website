@@ -4,8 +4,17 @@ from PIL import Image
 import onnxruntime as ort
 import io
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MODEL_PATH = "/app/model.onnx"
 if not Path(MODEL_PATH).exists():
