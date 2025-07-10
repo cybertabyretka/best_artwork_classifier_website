@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, Request, UploadFile, File
@@ -7,9 +8,9 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from .utils import load_artists_mapping
 
-print(os.getcwd())
+print(Path(__file__).parent)
 
-ARTISTS_MAPPING = load_artists_mapping('./artists.csv')
+ARTISTS_MAPPING = load_artists_mapping(Path(__file__).parent / "artists.csv")
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
