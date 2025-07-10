@@ -1,18 +1,20 @@
-import httpx
-import os
-from fastapi import FastAPI, Request, UploadFile, File, HTTPException
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 import logging
+import os
+
+import httpx
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from .utils import load_artists_mapping
+
+ARTISTS_MAPPING = load_artists_mapping('../artists.csv')
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 
-# Настройка логирования
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Получаем URL из переменных окружения
 INFERENCE_SERVER_URL = os.getenv("INFERENCE_SERVER_URL")
 
 
@@ -31,31 +33,32 @@ async def predict(request: Request, file: UploadFile = File(...)):
         })
 
     try:
-        # Прочитать содержимое файла
         contents = await file.read()
 
         async with httpx.AsyncClient(timeout=30.0) as client:
-            # Отправляем файл на инференс-сервер
             files = {"file": (file.filename, contents, file.content_type)}
             response = await client.post(
                 INFERENCE_SERVER_URL,
                 files=files
             )
 
-            # Проверяем статус ответа
             response.raise_for_status()
             prediction = response.json()
 
+            class_idx = prediction["class"]
+            artist_name = ARTISTS_MAPPING.get(class_idx, f"Unknown artist (class {class_idx})")
+
             return templates.TemplateResponse("index.html", {
                 "request": request,
-                "prediction": prediction
+                "prediction": {
+                    **prediction,
+                    "artist_name": artist_name,
+                    "class_name": artist_name.replace('_', ' ')
+                }
             })
 
     except Exception as e:
-        # Логируем полную ошибку
         logger.error(f"Error connecting to inference server: {str(e)}")
-
-        # Возвращаем пользователю понятное сообщение
         return templates.TemplateResponse("index.html", {
             "request": request,
             "error": f"Ошибка связи с сервером предсказаний: {str(e)}"
