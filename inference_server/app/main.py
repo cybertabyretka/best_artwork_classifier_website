@@ -5,7 +5,7 @@ import onnxruntime as ort
 import io
 from pathlib import Path
 from fastapi.middleware.cors import CORSMiddleware
-from inference_server.app.utils import softmax
+from .utils import softmax
 
 
 app = FastAPI()
