@@ -1,21 +1,27 @@
-from fastapi import FastAPI, File, UploadFile
-import numpy as np
-from PIL import Image
-import onnxruntime as ort
 import io
 from pathlib import Path
-from fastapi.middleware.cors import CORSMiddleware
-from .utils import softmax
 
+import numpy as np
+import onnxruntime as ort
+from PIL import Image
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
+from .utils import softmax
 
 app = FastAPI()
 
+ALLOWED_ORIGINS = [
+    "https://best-artwork-classifier-website-91vq.onrender.com",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["predict"],
+    max_age=600
 )
 
 MODEL_PATH = "/app/model.onnx"
