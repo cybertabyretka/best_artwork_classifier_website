@@ -6,11 +6,7 @@ import httpx
 from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from .utils import load_artists_mapping
-
-print(Path(__file__).parent.parent)
-
-ARTISTS_MAPPING = load_artists_mapping(Path(__file__).parent.parent / "artists.csv")
+from .utils import ARTISTS_MAPPING
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
