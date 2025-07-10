@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Классификатор изображений</title>
+    <style>
+        .result { margin-top: 20px; padding: 15px; background: #f0f8ff; border-radius: 5px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Загрузите изображение для классификации</h1>
+    <form method="post" action="/predict" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Предсказать</button>
+    </form>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    {% if prediction %}
+        <div class="result">
+            <h2>Результат:</h2>
+            <p>Класс: {{ prediction.class }}</p>
+            <p>Уверенность: {{ (prediction.confidence * 100)|round(2) }}%</p>
+
+            <h3>Вероятности по классам:</h3>
+            <ul>
+                {% for prob in prediction.class_probs[0] %}
+                <li>Класс {{ loop.index0 }}: {{ (prob * 100)|round(2) }}%</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</body>
+</html>
