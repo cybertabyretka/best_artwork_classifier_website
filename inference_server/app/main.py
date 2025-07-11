@@ -124,6 +124,6 @@ async def predict(file: UploadFile = File(...)) -> Dict[str, Any]:
     return {
         "source": "inference",
         "class": predicted_class,
-        "confidence": round(confidence, 2),
+        "confidence": float(confidence),
         "class_probabilities": probabilities.tolist()
     }
