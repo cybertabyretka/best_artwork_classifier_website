@@ -101,3 +101,5 @@ document.addEventListener('DOMContentLoaded', function() {
         artistsList.appendChild(card);
     });
 });
+
+document.documentElement.classList.remove('theme-init');
