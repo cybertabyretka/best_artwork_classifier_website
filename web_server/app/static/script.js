@@ -1,3 +1,56 @@
+const ARTISTS = [
+    'Albrecht Dürer',
+    'Alfred Sisley',
+    'Amedeo Modigliani',
+    'Andrei Rublev',
+    'Andy Warhol',
+    'Camille Pissarro',
+    'Caravaggio',
+    'Claude Monet',
+    'Diego Rivera',
+    'Diego Velázquez',
+    'Edgar Degas',
+    'Édouard Manet',
+    'Edvard Munch',
+    'El Greco',
+    'Eugène Delacroix',
+    'Francisco Goya',
+    'Frida Kahlo',
+    'Georges Seurat',
+    'Giotto di Bondone',
+    'Gustav Klimt',
+    'Gustave Courbet',
+    'Henri Matisse',
+    'Henri Rousseau',
+    'Henri de Toulouse-Lautrec',
+    'Hieronymus Bosch',
+    'Jackson Pollock',
+    'Jan van Eyck',
+    'Joan Miró',
+    'Kazimir Malevich',
+    'Leonardo da Vinci',
+    'Marc Chagall',
+    'Michelangelo',
+    'Mikhail Vrubel',
+    'Pablo Picasso',
+    'Paul Cézanne',
+    'Paul Gauguin',
+    'Paul Klee',
+    'Peter Paul Rubens',
+    'Pierre-Auguste Renoir',
+    'Piet Mondrian',
+    'Pieter Bruegel',
+    'Raphael',
+    'Rembrandt',
+    'René Magritte',
+    'Salvador Dalí',
+    'Sandro Botticelli',
+    'Titian',
+    'Vasiliy Kandinskiy',
+    'Vincent van Gogh',
+    'William Turner'
+];
+
 const themeToggle = document.getElementById('theme-toggle');
 const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -36,4 +89,15 @@ fileInput.addEventListener('change', function() {
         fileName.textContent = '';
         previewContainer.style.display = 'none';
     }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const artistsList = document.getElementById('artists-list');
+
+    ARTISTS.forEach(artist => {
+        const card = document.createElement('div');
+        card.className = 'artist-card';
+        card.textContent = artist;
+        artistsList.appendChild(card);
+    });
 });
