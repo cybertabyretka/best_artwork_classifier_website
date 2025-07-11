@@ -43,11 +43,21 @@ def get_redis_aio(
 
 
 def get_redis_sync(redis_url: str, **kwargs) -> redis.Redis:
+    """
+    Create a synchronous Redis client connection.
+    :param redis_url: Redis connection URL (e.g. "redis://localhost:6379/0").
+    :param kwargs: Additional arguments passed to redis.from_url.
+    :return: A redis.Redis client instance.
+    """
     return redis.from_url(redis_url, **kwargs)
 
 
 def make_cache_key(data_bytes: bytes) -> str:
-    """Generate an SHA-256 based cache key for the input image bytes."""
+    """
+    Generate a deterministic cache key for given bytes using SHA-256.
+    :param data_bytes: The data in bytes for which to generate the key.
+    :return: A string in the format "inference:<sha256_hash>".
+    """
     h = hashlib.sha256(data_bytes).hexdigest()
     return f"inference:{h}"
 
@@ -112,6 +122,21 @@ def scan_all_redis_data(
         cast_numbers: bool = False,
         **kwargs
 ) -> Dict[str, Any]:
+    """
+    Scan all keys in a Redis database and retrieve their values.
+
+    Supports fetching all types of Redis data (strings, hashes,
+    lists, sets, sorted sets). Optionally casts values to numbers
+    if possible.
+    :param redis_url: Redis connection URL (e.g. "redis://localhost:6379/0").
+    :param pattern: SCAN pattern to match keys.
+    :param count: Number of keys to scan per iteration.
+    :param decode_responses: Whether to decode bytes to strings.
+    :param encoding: Encoding for decoded responses.
+    :param cast_numbers: Whether to cast string values to int/float when possible.
+    :param kwargs: Additional parameters for redis.from_url().
+    :return: A dictionary of keys and their corresponding values.
+    """
     result = {}
     r = get_redis_sync(
         redis_url,
@@ -130,7 +155,6 @@ def scan_all_redis_data(
             )
 
             for key in keys:
-                print(key)
                 key_type = r.type(key)
                 if key_type == 'string':
                     value = r.get(key)
@@ -171,6 +195,15 @@ def scan_all_redis_data(
 
 
 def try_cast_number(value: Union[str, bytes]) -> Union[int, float, str, bytes]:
+    """
+    Attempt to cast a string or bytes to int or float.
+
+    If the value represents a numeric string, returns
+    the corresponding number. Otherwise, returns the
+    original value as a string.
+    :param value: String or bytes value.
+    :return: int, float, or original string.
+    """
     if isinstance(value, bytes):
         value = value.decode("utf-8", errors="ignore")
 
