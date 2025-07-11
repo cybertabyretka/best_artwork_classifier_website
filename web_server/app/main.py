@@ -66,6 +66,10 @@ async def predict(request: Request, file: UploadFile = File(...)) -> HTMLRespons
     try:
         contents = await file.read()
 
+        base64_bytes = base64.b64encode(contents)
+        base64_str = base64_bytes.decode('utf-8')
+        data_uri = f"data:{file.content_type};base64,{base64_str}"
+
         async with httpx.AsyncClient(timeout=60.0) as client:
             files = {"file": (file.filename, contents, file.content_type)}
             response = await client.post(
@@ -85,7 +89,8 @@ async def predict(request: Request, file: UploadFile = File(...)) -> HTMLRespons
                     **prediction,
                     "artist_name": artist_name,
                     "class_name": artist_name.replace('_', ' ')
-                }
+                },
+                "image_data": data_uri,
             })
 
     except Exception as e:

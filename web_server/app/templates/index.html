@@ -43,6 +43,18 @@
         {% if prediction %}
             <div class="result">
                 <h2>Результат анализа</h2>
+
+                {% if image_data %}
+                    <div class="uploaded-image">
+                        <h3>Ваше загруженное изображение:</h3>
+                        <img
+                          src="{{ image_data }}"
+                          alt="Uploaded image"
+                          class="uploaded-image__img"
+                        >
+                    </div>
+                {% endif %}
+
                 <p><strong>Художник:</strong> {{ prediction.class_name }}</p>
                 <p><strong>Уверенность:</strong> {{ (prediction.confidence * 100)|round(2) }}%</p>
 
@@ -51,6 +63,7 @@
                 </div>
             </div>
         {% endif %}
+
 
         <div class="artists-container">
             <h2>Доступные для распознавания художники:</h2>
