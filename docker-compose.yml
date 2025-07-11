@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  inference_server:
+    build:
+      context: ./inference_server
+      dockerfile: Dockerfile
+    env_file:
+      - ./inference_server/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - inference_model_cache:/app/model_cache
+    working_dir: /app
+    command: ["./download_model.sh"]
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  web_server:
+    build:
+      context: ./web_server
+      dockerfile: Dockerfile
+    env_file:
+      - ./web_server/.env
+    ports:
+      - "80:80"
+    depends_on:
+      - inference_server
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  inference_model_cache:
+
+networks:
+  app-network:
+    driver: bridge
