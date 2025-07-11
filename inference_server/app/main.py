@@ -1,14 +1,15 @@
 import io
+import os
 from pathlib import Path
 from typing import Dict, Any
 
 import numpy as np
 import onnxruntime as ort
 from PIL import Image
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from .utils import softmax
+from .utils import softmax, get_redis_aio, make_cache_key
 
 app = FastAPI()
 
@@ -24,6 +25,8 @@ app.add_middleware(
     allow_headers=["predict"],
     max_age=600
 )
+
+REDIS_URL = os.getenv("REDIS_URL", "redis://:<password>@<host>:<port>/0")
 
 MODEL_PATH = "/app/model.onnx"
 if not Path(MODEL_PATH).exists():
@@ -61,7 +64,7 @@ def preprocess_image(image: Image.Image) -> np.ndarray:
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, str]:
     """
     Health check endpoint.
 
@@ -80,22 +83,47 @@ async def predict(file: UploadFile = File(...)) -> Dict[str, Any]:
 
     Accepts an image file via multipart/form-data, processes it, runs
     inference using an ONNX model, and returns predicted class and probabilities.
+    Implements Redis caching to speed up repeated requests.
     :param file: (UploadFile) Uploaded image file from client.
     :return: dict JSON response.
     """
-    contents = await file.read()
-    image = Image.open(io.BytesIO(contents)).convert("RGB")
+    data = await file.read()
+    key = make_cache_key(data)
+
+    redis = await get_redis_aio(REDIS_URL)
+
+    cached = await redis.get(key)
+    if cached:
+        try:
+            cls, conf, probs = cached.split("|")
+            probabilities = list(map(float, probs.split(",")))
+            return {
+                "source": "cache",
+                "class": int(cls),
+                "confidence": float(conf),
+                "class_probabilities": probabilities
+            }
+        except ValueError:
+            await redis.delete(key)
+
+    try:
+        image = Image.open(io.BytesIO(data)).convert("RGB")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid image file: {e}")
 
     input_data = preprocess_image(image)
-
     raw_output = model.run(None, {input_name: input_data})[0][0]
 
     probabilities = softmax(raw_output)
-    predicted_class = np.argmax(probabilities)
+    predicted_class = int(np.argmax(probabilities))
     confidence = float(probabilities[predicted_class])
 
+    serialized = f"{predicted_class}|{confidence:.4f}|{','.join(map(str, probabilities))}"
+    await redis.set(key, serialized, ex=600)
+
     return {
-        "class": int(predicted_class),
+        "source": "inference",
+        "class": predicted_class,
         "confidence": round(confidence, 2),
         "class_probabilities": probabilities.tolist()
     }
