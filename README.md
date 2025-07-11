@@ -13,6 +13,7 @@ A web application for classifying artworks by artist. Users upload an image, and
 - Upload images via a web interface
 - AI-based artist classification
 - Microservice architecture
+- Result caching with Redis (TTL = 10 minutes)
 - Docker containerization
 - Automatic deployment on Render.com
 
@@ -28,11 +29,13 @@ A web application for classifying artworks by artist. Users upload an image, and
   - ONNX Runtime
   - Pillow (image processing)
   - NumPy
+  - aioredis (async Redis client)
 
 - **Infrastructure**:
   - Docker
   - Render.com (cloud hosting)
   - Google Drive (model storage)
+  - Redis (caching layer)
 
 ## How It Works
 

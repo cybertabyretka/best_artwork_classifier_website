@@ -1,6 +1,14 @@
 version: "3.8"
 
 services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - app-network
+
   inference_server:
     build:
       context: ./inference_server
@@ -13,6 +21,8 @@ services:
       - inference_model_cache:/app/model_cache
     working_dir: /app
     command: ["./download_model.sh"]
+    depends_on:
+      - redis
     restart: unless-stopped
     networks:
       - app-network
