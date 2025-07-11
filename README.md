@@ -40,3 +40,18 @@ A web application for classifying artworks by artist. Users upload an image, and
 2. The web server sends the image to the inference server
 3. The inference server processes the image and makes a prediction
 4. The result (artist and confidence score) is returned to the user
+
+## Running the Service
+
+Make sure you have Docker and Docker Compose installed. From the root of the project (where your `docker-compose.yml` lives), run:
+
+```bash
+# Build images and start containers in detached mode
+docker-compose up --build -d
+
+# View logs (optional)
+docker-compose logs -f
+
+# Stop and remove containers, networks, and volumes
+docker-compose down
+```
