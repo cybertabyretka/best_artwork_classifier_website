@@ -1,0 +1,133 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.upload-container {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s;
+    margin-bottom: 15px;
+}
+
+.file-label:hover {
+    background: var(--secondary-color);
+}
+
+.submit-button {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    transition: background 0.3s;
+}
+
+.submit-button:hover {
+    background: var(--primary-color);
+}
+
+.file-name-display {
+    text-align: center;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.error {
+    color: var(--error-color);
+    background: var(--card-bg);
+    padding: 15px;
+    border-radius: 5px;
+    margin: 20px 0;
+    border-left: 4px solid var(--error-color);
+}
+
+.result {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+.confidence-bar {
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: var(--success-color);
+    width: 0%;
+    transition: width 1s ease-in-out;
+}
+
+.preview-container {
+    display: none;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 300px;
+    display: block;
+    margin: 20px auto;
+    border-radius: 5px;
+    border: 1px solid var(--border-color);
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .upload-container {
+        padding: 20px;
+    }
+}

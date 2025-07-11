@@ -1,0 +1,78 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --background-color: #ffffff;
+    --text-color: #333333;
+    --card-bg: #f8f9fa;
+    --border-color: #e0e0e0;
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+}
+
+.dark-mode {
+    --primary-color: #5d8bf4;
+    --secondary-color: #3a6bc8;
+    --background-color: #1a1a1a;
+    --text-color: #f0f0f0;
+    --card-bg: #2d2d2d;
+    --border-color: #444444;
+    --error-color: #ff6b6b;
+    --success-color: #6bff6b;
+}
+
+body {
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.theme-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--primary-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}

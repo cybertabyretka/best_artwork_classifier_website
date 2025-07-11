@@ -2,30 +2,57 @@
 <html>
 <head>
     <title>Классификатор изображений</title>
-    <style>
-        .error { color: red; margin-top: 20px; }
-        .result { margin-top: 20px; padding: 15px; background: #f0f8ff; border-radius: 5px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
-    <h1>Загрузите изображение для классификации</h1>
-    <form method="post" action="/predict" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <button type="submit">Предсказать</button>
-    </form>
+    <div class="theme-switcher">
+        <label class="switch">
+            <input type="checkbox" id="theme-toggle">
+            <span class="slider"></span>
+        </label>
+    </div>
 
-    {% if error %}
-        <div class="error">
-            <strong>Ошибка:</strong> {{ error }}
-        </div>
-    {% endif %}
+    <div class="container">
+        <h1>Классификатор изображений</h1>
+        <p class="subtitle">Загрузите изображение для определения художника</p>
 
-    {% if prediction %}
-        <div class="result">
-            <h2>Результат:</h2>
-            <p>Художник: {{ prediction.class_name }}</p>
-            <p>Уверенность: {{ (prediction.confidence * 100)|round(2) }}%</p>
+        <div class="upload-container">
+            <form method="post" action="/predict" enctype="multipart/form-data" id="upload-form">
+                <div class="form-group">
+                    <label for="file-input" class="file-label">Выберите изображение</label>
+                    <input type="file" name="file" id="file-input" accept="image/*" required>
+                    <div id="file-name" class="file-name-display"></div>
+                </div>
+
+                <div id="image-preview-container" class="preview-container">
+                    <img id="preview-image" class="preview-image" src="#" alt="Предпросмотр">
+                </div>
+
+                <button type="submit" class="submit-button">Определить художника</button>
+            </form>
         </div>
-    {% endif %}
+
+        {% if error %}
+            <div class="error">
+                <strong>Ошибка:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Результат анализа</h2>
+                <p><strong>Художник:</strong> {{ prediction.class_name }}</p>
+                <p><strong>Уверенность:</strong> {{ (prediction.confidence * 100)|round(2) }}%</p>
+
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: {{ (prediction.confidence * 100)|round(2) }}%;"></div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
