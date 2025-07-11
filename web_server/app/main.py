@@ -4,6 +4,7 @@ import os
 import httpx
 from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .utils import ARTISTS_MAPPING
