@@ -60,6 +60,19 @@ def preprocess_image(image: Image.Image) -> np.ndarray:
     return img_array.astype(np.float32)
 
 
+@app.get("/health")
+async def health_check():
+    """
+    Health check endpoint.
+
+    Provides a simple way to check if the server is running and ready
+    to accept requests. Typically used for monitoring or deployment
+    readiness checks.
+    :return: dict A JSON response indicating the server status.
+    """
+    return {"status": "ready"}
+
+
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)) -> Dict[str, Any]:
     """

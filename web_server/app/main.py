@@ -58,9 +58,15 @@ async def predict(request: Request, file: UploadFile = File(...)) -> HTMLRespons
         })
 
     try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            await client.get(f"{INFERENCE_SERVER_URL}/health")
+    except Exception as e:
+        logger.warning(f"Warm-up failed: {str(e)}")
+
+    try:
         contents = await file.read()
 
-        async with httpx.AsyncClient(timeout=30.0) as client:
+        async with httpx.AsyncClient(timeout=60.0) as client:
             files = {"file": (file.filename, contents, file.content_type)}
             response = await client.post(
                 INFERENCE_SERVER_URL,
