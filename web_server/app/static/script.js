@@ -56,7 +56,7 @@ const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
 
 if (localStorage.getItem('theme') === 'dark' ||
     (!localStorage.getItem('theme') && prefersDarkScheme.matches)) {
-    document.body.classList.add('dark-mode');
+    document.documentElement.classList.add('dark-mode');
     themeToggle.checked = true;
 }
 

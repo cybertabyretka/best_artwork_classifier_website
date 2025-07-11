@@ -9,7 +9,7 @@
     --success-color: #2ecc71;
 }
 
-.dark-mode {
+html.dark-mode {
     --primary-color: #5d8bf4;
     --secondary-color: #3a6bc8;
     --background-color: #1a1a1a;
