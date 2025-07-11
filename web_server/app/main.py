@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 import httpx
 from fastapi import FastAPI, Request, UploadFile, File
@@ -10,12 +11,15 @@ from fastapi.templating import Jinja2Templates
 from .utils import ARTISTS_MAPPING
 
 app = FastAPI()
+BASE_DIR = Path(__file__).parent
+
 app.mount(
     "/static",
-    StaticFiles(directory="app/static"),
+    StaticFiles(directory=BASE_DIR / "static"),
     name="static"
 )
-templates = Jinja2Templates(directory="app/templates")
+
+templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
