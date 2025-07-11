@@ -26,6 +26,14 @@ def get_redis_aio(
     encoding: str = "utf-8",
     **kwargs
 ) -> aioredis.Redis:
+    """
+    Makes an asinc connection to Redis.
+    :param redis_url: Redis URL.
+    :param decode_responses: Decode bytes to strings (Yes/No)
+    :param encoding: Coding
+    :param kwargs: Extra parameters to aioredis.from_url function
+    :return: Redis asinc client
+    """
     return aioredis.from_url(
         url=redis_url,
         decode_responses=decode_responses,
