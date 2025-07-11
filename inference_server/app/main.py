@@ -1,5 +1,6 @@
 import io
 from pathlib import Path
+from typing import Dict, Any
 
 import numpy as np
 import onnxruntime as ort
@@ -38,10 +39,14 @@ STD = np.array([0.229, 0.224, 0.225])
 
 def preprocess_image(image: Image.Image) -> np.ndarray:
     """
-    Репликация PyTorch-преобразований:
-    1. Resize
-    2. ToTensor (деление на 255 + изменение порядка осей)
-    3. Normalize
+    Perform preprocessing on the input image to replicate
+    PyTorch transforms:
+
+    1. Resize to target size
+    2. Convert to tensor format (scale pixel values to [0, 1] and rearrange axes)
+    3. Normalize using mean and std
+    :param image: (Image.Image) The input PIL image.
+    :return: np.ndarray The preprocessed image ready for model inference, with shape (1, 3, H, W) and dtype float32.
     """
     image = image.resize(PIC_SIZE)
     img_array = np.array(image, dtype=np.float32)
@@ -56,8 +61,15 @@ def preprocess_image(image: Image.Image) -> np.ndarray:
 
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
-    """API endpoint для предсказаний"""
+async def predict(file: UploadFile = File(...)) -> Dict[str, Any]:
+    """
+    Endpoint for performing model inference on an uploaded image.
+
+    Accepts an image file via multipart/form-data, processes it, runs
+    inference using an ONNX model, and returns predicted class and probabilities.
+    :param file: (UploadFile) Uploaded image file from client.
+    :return: dict JSON response.
+    """
     contents = await file.read()
     image = Image.open(io.BytesIO(contents)).convert("RGB")
 

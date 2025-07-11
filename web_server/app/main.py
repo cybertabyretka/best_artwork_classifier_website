@@ -28,12 +28,28 @@ INFERENCE_SERVER_URL = os.getenv("INFERENCE_SERVER_URL")
 
 
 @app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
+async def home(request: Request) -> HTMLResponse:
+    """
+    Serve the home page of the application.
+
+    Renders the index.html template.
+    :param request: (Request) The incoming HTTP request.
+    :return: HTMLResponse Rendered HTML response.
+    """
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.post("/predict")
-async def predict(request: Request, file: UploadFile = File(...)):
+async def predict(request: Request, file: UploadFile = File(...)) -> HTMLResponse:
+    """
+    Handle image upload and send it to the inference server for prediction.
+
+    Reads the uploaded file, forwards it to the inference API, and renders
+    the result on the home page. Handles server errors gracefully.
+    :param request: (Request) The incoming HTTP request.
+    :param file: (UploadFile) Uploaded image file from the client.
+    :return: HTMLResponse Rendered HTML response containing either prediction results or an error message.
+    """
     if not INFERENCE_SERVER_URL:
         logger.error("INFERENCE_SERVER_URL environment variable is not set")
         return templates.TemplateResponse("index.html", {
