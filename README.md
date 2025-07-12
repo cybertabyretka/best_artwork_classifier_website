@@ -58,3 +58,6 @@ docker-compose logs -f
 # Stop and remove containers, networks, and volumes
 docker-compose down
 ```
+
+## Link to repository with models experiments
+[Models experiments](https://github.com/demirtry/best-artworks-classifier)
