@@ -37,11 +37,6 @@ async def home(request: Request) -> HTMLResponse:
     :param request: (Request) The incoming HTTP request.
     :return: HTMLResponse Rendered HTML response.
     """
-    try:
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            await client.get(f"{INFERENCE_SERVER_URL.split('/')[0]}/health")
-    except Exception as e:
-        logger.warning(f"Warm-up failed: {str(e)}")
     return templates.TemplateResponse("index.html", {"request": request})
 
 
